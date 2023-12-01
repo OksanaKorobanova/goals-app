@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from './components/Header';
+import GoalsImg from './assets/goals.jpg';
+import { useState } from 'react';
+import CourseGoalList from './components/CourseGoalList';
+import NewGoal from './components/NewGoal';
 
-function App() {
-  const [count, setCount] = useState(0)
+export type CourseGoal = {
+  title: string;
+  description: string;
+  id: number;
+};
+
+export default function App() {
+  const [goals, setGoals] = useState<CourseGoal[]>([]);
+
+  function addGoalHandler(goal: string, summary: string) {
+    setGoals((prev) => {
+      const newGoal: CourseGoal = {
+        title: goal,
+        description: summary,
+        id: Math.random(),
+      };
+      return [...prev, newGoal];
+    });
+  }
+
+  function deleteGoalHandler(id: number) {
+    setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main>
+      <Header image={{ src: GoalsImg, alt: 'Goals img' }}>
+        <h1>Goals app</h1>
+      </Header>
+      <NewGoal onAddGoal={addGoalHandler} />
+      <CourseGoalList goals={goals} onDeleteGoal={deleteGoalHandler} />
+    </main>
+  );
 }
-
-export default App
